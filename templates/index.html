@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MooTube - Home</title>
+    <style>
+        input {
+            display: block;
+            margin: 0 auto;
+            width: 800px;
+            height: 100;
+            color: rgb(0, 0, 0);
+            font-size: larger;
+            background-repeat: repeat;
+            background-size: 60px;
+            border-radius: 50px;
+            text-align: right;
+            background-image: url(https://st2.depositphotos.com/34691520/44962/v/450/depositphotos_449622386-stock-illustration-seamless-pattern-large-cow-spots.jpg);
+        }
+        body {
+            background-repeat: repeat;
+            background-size: 100px;
+            margin: 0;
+            background-color: rgb(240, 238, 238);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        
+        header {
+            background-color: white;
+            padding: 10px;
+            display: flex; 
+            align-items: center; 
+            gap: 20px; 
+            justify-content: center; 
+        }
+
+        .videos {
+            text-align: center;
+            margin: 50px;
+        }
+        
+        h1 {
+            margin: 0;
+        }
+
+        .video-player {
+            width: 100%;
+            max-width: 270px;
+            border-radius: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Grid de vídeos (se quiser mostrar vários) */
+        .video-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .video-card {
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            width: 200px;
+        }
+
+        .video-card video {
+            width: 100%;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🐮 MooTube</h1>
+        <form action="/pesquisar" method="get">
+        <input type="search" name="busca" placeholder="Pesquisar vídeos...">
+        </form>
+    </header>
+    
+    <div class="videos">
+        <h2>📁 Sua biblioteca ({{ videos|length }} vídeos)</h2>
+        
+        <div class="video-grid">
+            {% for video in videos %}
+            <div class="video-card">
+                <video class="video-player" controls>
+                    <source src="{{ url_for('serve_video', nome_video=video) }}" type="video/mp4">
+                    Seu navegador não suporta vídeo.
+                </video>
+                <p>{{ video }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
