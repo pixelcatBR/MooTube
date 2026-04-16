@@ -2,62 +2,140 @@ from flask import Flask, render_template, send_from_directory, request, abort
 import os
 import subprocess
 import re
+import time
+from pathlib import Path
+from functools import wraps
+from datetime import datetime
 
 app = Flask(__name__)
 
-# Pasta onde ficam os vídeos
 PASTA_VIDEOS = "videos"
+MAX_FILE_SIZE = 2 * 1024 * 1024 * 1024 
+ALLOWED_EXTENSIONS = {'.mp4', '.webm', '.mkv', '.avi', '.mov'}
+MAX_SEARCH_LENGTH = 200
+DOWNLOAD_TIMEOUT = 300 
+RATE_LIMIT = 15 
 
-# Cria a pasta se não existir
+
+rate_limit_store = {}
+
+def rate_limit(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        client_ip = request.remote_addr
+        now = time.time()
+        
+        if client_ip not in rate_limit_store:
+            rate_limit_store[client_ip] = []
+        
+        rate_limit_store[client_ip] = [
+            req_time for req_time in rate_limit_store[client_ip]
+            if now - req_time < 60
+        ]
+        
+        if len(rate_limit_store[client_ip]) >= RATE_LIMIT:
+            return "Limite de downloads excedido. Aguarde um momento.", 429
+        
+        rate_limit_store[client_ip].append(now)
+        return f(*args, **kwargs)
+    return decorated_function
+
+def sanitize_filename(filename):
+    """Sanitiza o nome do arquivo de forma segura"""
+
+    filename = re.sub(r'[^\w\s\-\.]', '', filename)
+
+    filename = re.sub(r'\s+', ' ', filename)
+
+    filename = filename[:200]
+    return filename.strip()
+
+def validate_video_path(filename):
+    """Valida se o caminho do vídeo é seguro"""
+
+    safe_path = os.path.normpath(os.path.join(PASTA_VIDEOS, filename))
+    if not safe_path.startswith(os.path.normpath(PASTA_VIDEOS)):
+        return False, None
+
+    ext = os.path.splitext(filename)[1].lower()
+    if ext not in ALLOWED_EXTENSIONS:
+        return False, None
+    
+    return True, safe_path
+
 os.makedirs(PASTA_VIDEOS, exist_ok=True)
 
 @app.route('/')
 def index():
     """Página inicial - lista os vídeos"""
     
-    # Lê todos os vídeos da pasta
+
     videos = []
     for arquivo in os.listdir(PASTA_VIDEOS):
-        if arquivo.endswith(('.mp4', '.webm', '.mkv')):
-            videos.append(arquivo)
+        if arquivo.endswith(tuple(ALLOWED_EXTENSIONS)):
+
+            is_safe, _ = validate_video_path(arquivo)
+            if is_safe:
+                videos.append(arquivo)
     
     return render_template('index.html', videos=videos)
 
-@app.route('/video/<nome_video>')
+@app.route('/video/<path:nome_video>')
 def serve_video(nome_video):
-    """Serve o arquivo de vídeo"""
+    """Serve o arquivo de vídeo com segurança"""
+
+    nome_video_safe = sanitize_filename(nome_video)
     
-    return send_from_directory(PASTA_VIDEOS, nome_video)
+    is_safe, _ = validate_video_path(nome_video_safe)
+    if not is_safe:
+        abort(404)
+    
+    response = send_from_directory(PASTA_VIDEOS, nome_video_safe)
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    
+    return response
 
 @app.route('/pesquisar')
+@rate_limit
 def pesquisar():
     """Pesquisa e baixa o primeiro vídeo do YouTube"""
     
-    termo = request.args.get("busca")
+    termo = request.args.get("busca", "").strip()
     
     if not termo:
         return "Nenhum termo de busca fornecido.", 400
+
+    if len(termo) > MAX_SEARCH_LENGTH:
+        return "Termo de busca muito longo.", 400
+
+    termo_seguro = re.sub(r'[;&|`$<>]', '', termo)
     
-    print(f"📥 Baixando: {termo}")
+    print(f"📥 Baixando: {termo_seguro}")
     
-    # Limpa o nome do arquivo para evitar problemas
-    nome_limpo = re.sub(r'[^\w\s-]', '', termo)
+    videos_path = Path(PASTA_VIDEOS).resolve()
     
-    # Comando para baixar o primeiro resultado da busca
     cmd = [
         "yt-dlp",
-        f"ytsearch1:{termo}",
-        "-o", f"{PASTA_VIDEOS}/%(title)s.%(ext)s",
+        f"ytsearch1:{termo_seguro}",
+        "-o", str(videos_path / "%(title)s.%(ext)s"),
         "--no-warnings",
-        "--restrict-filenames"
+        "--restrict-filenames",
+        "--no-playlist", 
+        "--socket-timeout", "30"
     ]
     
     try:
-        # Executa o download
-        resultado = subprocess.run(cmd, check=True, capture_output=True, text=True)
-        print(f"✅ Download concluído: {termo}")
+
+        resultado = subprocess.run(
+            cmd, 
+            check=True, 
+            capture_output=True, 
+            text=True,
+            timeout=DOWNLOAD_TIMEOUT
+        )
         
-        # Retorna página de sucesso com redirect automático
+        print(f"✅ Download concluído: {termo_seguro}")
+
         return """
         <!DOCTYPE html>
         <html lang="pt-br">
@@ -102,10 +180,55 @@ def pesquisar():
         </html>
         """
         
+    except subprocess.TimeoutExpired:
+        print(f"⏰ Timeout no download")
+        return """
+        <!DOCTYPE html>
+        <html lang="pt-br">
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="refresh" content="3; url=/">
+            <title>Erro - MooTube</title>
+            <style>
+                body {
+                    background-repeat: repeat;
+                    background-size: 100px;
+                    margin: 0;
+                    background-color: rgb(240, 238, 238);
+                    font-family: Arial, Helvetica, sans-serif;
+                    min-height: 100vh;
+                }
+                .container {
+                    text-align: center;
+                    padding-top: 200px;
+                }
+                h1 {
+                    color: #d32f2f;
+                    font-size: 28px;
+                }
+                p {
+                    color: #666;
+                    font-size: 18px;
+                }
+                .emoji {
+                    font-size: 64px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="emoji">🐮⏰</div>
+                <h1>Timeout no download</h1>
+                <p>A operação demorou muito tempo.</p>
+                <p>Redirecionando em 3 segundos...</p>
+            </div>
+        </body>
+        </html>
+        """, 504
+        
     except subprocess.CalledProcessError as e:
         print(f"❌ Erro no download: {e.stderr}")
-        
-        # Retorna página de erro
+
         return f"""
         <!DOCTYPE html>
         <html lang="pt-br">
@@ -150,5 +273,12 @@ def pesquisar():
         </html>
         """, 500
 
+@app.after_request
+def add_security_headers(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'DENY'
+    return response
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+
+    app.run(host='0.0.0.0', port=5000)
