@@ -62,5 +62,5 @@ python3 main.py
  esse projeto está licensiado sobre a licença do mit, leia o arquivo de licença para mais detalhes
 
 ## contribuição
-contribua fazendo forks e pullrequests, não tem muitas regras
+contribua fazendo forks e pullrequests.
 
