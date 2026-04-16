@@ -11,7 +11,28 @@ o MooTube é um gerenciador de downloads do youtube com capacidade de organizaç
 
 ## como instalar
 
-para instalar primeiro precisamos copiar o código fonte do github em zip
+para instalar temos dois métodos oficiais, Dockerfile e manual
+
+## método Dockerfile(recomendado)
+
+primeiro clone o dockerfile
+
+```bash
+wget https://raw.githubusercontent.com/pixelcatBR/mootube/main/Dockerfile
+```
+após isso gere uma build dele
+
+```bash
+sudo docker build -t mootube
+```
+e após tudo isso execute
+```bash
+sudo docker run -it mootube
+```
+## método manual
+
+para instalar primeiro precisamos copiar o código fonte do github em zip, via gitclone ou interface gráfica
+
 após isso abra o zip já extraído e crie um venv
 ``` bash
 python -m venv mootube
