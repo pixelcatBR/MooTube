@@ -16,22 +16,14 @@ esse projeto ainda está muito básico, não é pra produção.
 
 para instalar temos dois métodos oficiais, Dockerfile e manual
 
-## método Dockerfile(recomendado para facilidade e uso básico)
+## método Dockerfile(recomendado por ser fácil de instalar)
 
-primeiro clone o dockerfile
-
-```bash
-wget https://raw.githubusercontent.com/pixelcatBR/mootube/main/Dockerfile
-```
-após isso gere uma build dele
+dê docker run
 
 ```bash
-sudo docker build -t mootube .
+sudo docker run -it -p 5000:5000 pixelcatbr/mootube
 ```
-e após tudo isso execute
-```bash
-sudo docker run -it -p 5000:5000 mootube
-```
+acesse a interface web pelo endereço no terminal e pronto
 ## método manual (recomendado pra uso avançado e estudo do código)
 
 para instalar primeiro precisamos copiar o código fonte do github em zip, via gitclone ou interface gráfica
@@ -56,6 +48,7 @@ e após tudo isso execute.
 ``` bash
 python3 main.py
 ```
+ele vai te dar o ip e é só usar
 
 ## licença
  esse projeto está licensiado sobre a licença do mit, leia o arquivo de licença para mais detalhes
