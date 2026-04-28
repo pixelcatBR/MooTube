@@ -26,7 +26,7 @@ sudo docker run -it -p 5000:5000 pixelcatbr/mootube
 acesse a interface web pelo endereço no terminal e pronto
 ## método manual (recomendado pra uso avançado e estudo do código)
 
-para instalar primeiro precisamos copiar o código fonte do github em zip, via gitclone ou interface gráfica
+para instalar primeiro precisamos copiar o código fonte do github em zip, via git clone ou interface gráfica
 
 após isso abra o zip já extraído e crie um venv
 ``` bash
