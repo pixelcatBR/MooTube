@@ -154,13 +154,15 @@ def add_security_headers(response):
     return response
 
 @app.route("/atualizar")
-
 def atualizar():
     try:
-        subprocess.run(["apt", "update"])
-        time.sleep(1)
-        subprocess.run(r"pip list --outdated --format=freeze | grep -v '^\-e' | cut -d '=' -f 1 | xargs -n1 pip install -U --break-system-packages", shell=True)
-    except:
+        subprocess.run(["apt", "update", "-y"], check=True, capture_output=True)
+        subprocess.run(["pip", "install", "-U", "flask", "yt-dlp"], check=True, capture_output=True)
+
+        return render_template('update-sucess.html')
+        
+    except subprocess.CalledProcessError as e:
+        print(f"Erro na atualização: {e.stderr}")
         return render_template('update-error.html')
 
 if __name__ == '__main__':
