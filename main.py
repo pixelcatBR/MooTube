@@ -135,143 +135,17 @@ def pesquisar():
         )
         
         print(f"✅ Download concluído: {termo_seguro}")
+        return render_template('sucess.html')
 
-        return """
-        <!DOCTYPE html>
-        <html lang="pt-br">
-        <head>
-            <meta charset="UTF-8">
-            <meta http-equiv="refresh" content="2; url=/">
-            <title>Download concluído - MooTube</title>
-            <style>
-                body {
-                    background-repeat: repeat;
-                    background-size: 100px;
-                    margin: 0;
-                    background-color: rgb(240, 238, 238);
-                    font-family: Arial, Helvetica, sans-serif;
-                    min-height: 100vh;
-                }
-                .container {
-                    text-align: center;
-                    padding-top: 200px;
-                }
-                h1 {
-                    color: #333;
-                    font-size: 28px;
-                }
-                p {
-                    color: #666;
-                    font-size: 18px;
-                }
-                .emoji {
-                    font-size: 64px;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <div class="emoji">🐮✅</div>
-                <h1>Download concluído!</h1>
-                <p>O vídeo foi adicionado à sua biblioteca.</p>
-                <p>Redirecionando em 2 segundos...</p>
-            </div>
-        </body>
-        </html>
-        """
         
     except subprocess.TimeoutExpired:
         print(f"⏰ Timeout no download")
-        return """
-        <!DOCTYPE html>
-        <html lang="pt-br">
-        <head>
-            <meta charset="UTF-8">
-            <meta http-equiv="refresh" content="3; url=/">
-            <title>Erro - MooTube</title>
-            <style>
-                body {
-                    background-repeat: repeat;
-                    background-size: 100px;
-                    margin: 0;
-                    background-color: rgb(240, 238, 238);
-                    font-family: Arial, Helvetica, sans-serif;
-                    min-height: 100vh;
-                }
-                .container {
-                    text-align: center;
-                    padding-top: 200px;
-                }
-                h1 {
-                    color: #d32f2f;
-                    font-size: 28px;
-                }
-                p {
-                    color: #666;
-                    font-size: 18px;
-                }
-                .emoji {
-                    font-size: 64px;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <div class="emoji">🐮⏰</div>
-                <h1>Timeout no download</h1>
-                <p>A operação demorou muito tempo.</p>
-                <p>Redirecionando em 3 segundos...</p>
-            </div>
-        </body>
-        </html>
-        """, 504
+        return render_template('timeout.html')
         
     except subprocess.CalledProcessError as e:
         print(f"❌ Erro no download: {e.stderr}")
 
-        return f"""
-        <!DOCTYPE html>
-        <html lang="pt-br">
-        <head>
-            <meta charset="UTF-8">
-            <meta http-equiv="refresh" content="3; url=/">
-            <title>Erro - MooTube</title>
-            <style>
-                body {{
-                    background-repeat: repeat;
-                    background-size: 100px;
-                    margin: 0;
-                    background-color: rgb(240, 238, 238);
-                    font-family: Arial, Helvetica, sans-serif;
-                    min-height: 100vh;
-                }}
-                .container {{
-                    text-align: center;
-                    padding-top: 200px;
-                }}
-                h1 {{
-                    color: #d32f2f;
-                    font-size: 28px;
-                }}
-                p {{
-                    color: #666;
-                    font-size: 18px;
-                }}
-                .emoji {{
-                    font-size: 64px;
-                }}
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <div class="emoji">🐮❌</div>
-                <h1>Erro ao baixar vídeo</h1>
-                <p>Não foi possível encontrar ou baixar o vídeo.</p>
-                <p>Redirecionando em 3 segundos...</p>
-            </div>
-        </body>
-        </html>
-        """, 500
+        return render_template('error.html')
 
 @app.after_request
 def add_security_headers(response):
