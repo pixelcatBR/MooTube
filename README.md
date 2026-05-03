@@ -30,11 +30,11 @@ para instalar primeiro precisamos copiar o código fonte do github em zip, via g
 
 após isso abra o zip já extraído e crie um venv
 ``` bash
-python -m venv mootube
+python -m venv venv
 ```
 após isso entre no venv
 ``` bash
-source mootube/bin/activate
+source venv/bin/activate
 ```
 depois instale as dependências no venv
 ``` bash
