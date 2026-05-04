@@ -55,7 +55,7 @@ após instalar:
 - após atualizar use sudo docker stop mootube-server e depois use sudo docker start -i mootube-server para reiniciar
 - use sudo docker start -i mootube-server após ter rodado o run uma vez para rodar mootube com os vídeos que você já baixou.
 ## licença
- esse projeto está licensiado sobre a licença do mit, leia o arquivo de licença para mais detalhes
+ esse projeto está licenciado sobre a licença do mit, leia o arquivo de licença para mais detalhes
 
 ## contribuição
 contribua fazendo forks e pullrequests.
