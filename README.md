@@ -2,7 +2,7 @@
 o MooTube é um gerenciador de downloads do youtube selfhost com capacidade de organização básica e pesquisa.
 
 ## Aviso
-esse projeto está até funcional, mas não recomendo expor na internet se você tiver conhecimento técnico 
+esse projeto está até funcional, mas não recomendo expor na internet se você tiver conhecimento técnico para isso
 
 ## funcionalidades
 
