@@ -53,6 +53,7 @@ ele vai te dar o ip e é só usar
 após instalar:
 - baixe alguns vídeos e salve para você assistir sem internet.
 - verifique se não há uma nova atualização, aperte o botão atualizar e verificar que você vai baixar a versão mais recente.
+- após atualizar use docker stop mootube-server e depois use docker start -i mootube-server para reiniciar
 - use docker start -i mootube-server após ter rodado o run uma vez para rodar mootube com os vídeos que você já baixou.
 ## licença
  esse projeto está licensiado sobre a licença do mit, leia o arquivo de licença para mais detalhes
