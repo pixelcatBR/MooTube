@@ -164,6 +164,19 @@ def atualizar():
         print(f"Erro: {e.stderr}")
         return render_template('update-error.html')
 
+@app.route('/deletar/<nome_video>', methods=['GET'])
+def deletar_video(nome_video):
+    try:
+        caminho = os.path.join(PASTA_VIDEOS, nome_video)
+
+        if os.path.exists(caminho):
+            os.remove(caminho)
+            
+        return render_template('delete-sucess.html')
+        
+    except:
+        return render_template('delete-error.html')
+  
 if __name__ == '__main__':
 
     app.run(host='0.0.0.0', port=5000)
