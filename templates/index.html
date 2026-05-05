@@ -107,6 +107,10 @@
                     Seu navegador não suporta vídeo.
                 </video>
                 <p>{{ video }}</p>
+                <form action="/deletar/{{video}}">
+                    <button>deletar</button>
+                </form>
+
             </div>
             {% endfor %}
         </div>
