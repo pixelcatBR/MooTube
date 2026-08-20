@@ -1,4 +1,4 @@
-from flask import Flask, render_template, send_from_directory, request, abort
+from flask import Flask, render_template, send_from_directory, request, abort, jsonify
 import os
 import subprocess
 import re
@@ -15,7 +15,6 @@ ALLOWED_EXTENSIONS = {'.mp4', '.webm', '.mkv', '.avi', '.mov'}
 MAX_SEARCH_LENGTH = 200
 DOWNLOAD_TIMEOUT = 300 
 RATE_LIMIT = 15 
-
 
 rate_limit_store = {}
 
@@ -41,26 +40,18 @@ def rate_limit(f):
     return decorated_function
 
 def sanitize_filename(filename):
-    """Sanitiza o nome do arquivo de forma segura"""
-
     filename = re.sub(r'[^\w\s\-\.]', '', filename)
-
     filename = re.sub(r'\s+', ' ', filename)
-
     filename = filename[:200]
     return filename.strip()
 
 def validate_video_path(filename):
-    """Valida se o caminho do vídeo é seguro"""
-
     safe_path = os.path.normpath(os.path.join(PASTA_VIDEOS, filename))
     if not safe_path.startswith(os.path.normpath(PASTA_VIDEOS)):
         return False, None
-
     ext = os.path.splitext(filename)[1].lower()
     if ext not in ALLOWED_EXTENSIONS:
         return False, None
-    
     return True, safe_path
 
 os.makedirs(PASTA_VIDEOS, exist_ok=True)
@@ -72,40 +63,38 @@ def ler_urls_do_arquivo():
     except:
         return []
 
-@app.route('/')
-def index():
-    videos = []
+todos_videos = []
+
+def atualizar_lista_videos():
+    global todos_videos
+    todos_videos = []
     for arquivo in os.listdir(PASTA_VIDEOS):
         if arquivo.endswith(tuple(ALLOWED_EXTENSIONS)):
-
             is_safe, _ = validate_video_path(arquivo)
             if is_safe:
-                videos.append(arquivo)
+                todos_videos.append(arquivo)
 
+atualizar_lista_videos()
+
+@app.route('/')
+def index():
     urls = ler_urls_do_arquivo()
-    
-    return render_template('index.html', videos=videos, urls=urls)
+    return render_template('index.html', videos=todos_videos, urls=urls)
 
 @app.route('/video/<path:nome_video>')
 def serve_video(nome_video):
-    """Serve o arquivo de vídeo com segurança"""
-
     nome_video_safe = sanitize_filename(nome_video)
-    
     is_safe, _ = validate_video_path(nome_video_safe)
     if not is_safe:
         abort(404)
-    
     response = send_from_directory(PASTA_VIDEOS, nome_video_safe)
     response.headers['X-Content-Type-Options'] = 'nosniff'
-    
     return response
 
 @app.route('/url', methods=['POST'])
 @rate_limit
 def baixar_urls():
     urls = ler_urls_do_arquivo()
-    
     if not urls:
         return "Nenhuma URL encontrada no arquivo urls.txt.", 400
     
@@ -116,7 +105,6 @@ def baixar_urls():
     for url in urls:
         try:
             print(f"Baixando: {url}")
-            
             cmd = [
                 "yt-dlp",
                 url,
@@ -126,7 +114,6 @@ def baixar_urls():
                 "--no-playlist", 
                 "--socket-timeout", "30"
             ]
-            
             subprocess.run(
                 cmd, 
                 check=True, 
@@ -134,30 +121,28 @@ def baixar_urls():
                 text=True,
                 timeout=DOWNLOAD_TIMEOUT
             )
-            
             sucessos += 1
-            print(f"✅ Download concluído: {url}")
-            
+            print(f"Download concluído: {url}")
         except Exception as e:
             erros += 1
-            print(f"❌ Erro ao baixar {url}: {e}")
+            print(f"Erro ao baixar {url}: {e}")
+    
+    atualizar_lista_videos()
     
     if erros == 0:
         return render_template('sucess.html')
     elif sucessos > 0:
-        return f"Baixados {sucessos} vídeos, {erros} falhas."
+        return f"Baixados {sucessos} videos, {erros} falhas."
     else:
         return render_template('error.html')
 
 @app.route('/pesquisar')
 @rate_limit
 def pesquisar():
-
     termo = request.args.get("busca", "").strip()
     
     if not termo:
         return "Nenhum termo de busca fornecido.", 400
-
     if len(termo) > MAX_SEARCH_LENGTH:
         return "Termo de busca muito longo.", 400
 
@@ -178,27 +163,33 @@ def pesquisar():
     ]
     
     try:
-
-        resultado = subprocess.run(
+        subprocess.run(
             cmd, 
             check=True, 
             capture_output=True, 
             text=True,
             timeout=DOWNLOAD_TIMEOUT
         )
-        
-        print(f"Download concluído: {termo_seguro}")
+        atualizar_lista_videos()
+        print(f"Download concluido: {termo_seguro}")
         return render_template('sucess.html')
-
-        
     except subprocess.TimeoutExpired:
         print(f"Timeout no download")
         return render_template('timeout.html')
-        
     except subprocess.CalledProcessError as e:
         print(f"Erro no download: {e.stderr}")
-
         return render_template('error.html')
+
+@app.route('/filtrar')
+def filtrar():
+    termo = request.args.get("busca", "").strip().lower()
+    
+    if not termo:
+        videos_filtrados = todos_videos
+    else:
+        videos_filtrados = [v for v in todos_videos if termo in v.lower()]
+    
+    return jsonify(videos_filtrados)
 
 @app.after_request
 def add_security_headers(response):
@@ -221,12 +212,10 @@ def atualizar():
 def deletar_video(nome_video):
     try:
         caminho = os.path.join(PASTA_VIDEOS, nome_video)
-
         if os.path.exists(caminho):
             os.remove(caminho)
-            
+        atualizar_lista_videos()
         return render_template('delete-sucess.html')
-        
     except:
         return render_template('delete-error.html')
   
@@ -237,6 +226,6 @@ def license():
 @app.route("/features")
 def features():
     return render_template("features.html")
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
