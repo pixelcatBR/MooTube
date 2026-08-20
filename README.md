@@ -6,7 +6,7 @@ o MooTube é um reprodutor de vídeos web auto-hospedado integrado com yt-dlp.
 ## funcionalidades
 
 - listar vídeos com fotos automáticas do embed
-- reproduzir vídeos baixados e na internet(embed do navegador)
+- reproduzir vídeos baixados no embed do navegador
 - baixar vídeos via yt-dlp
 - listar e reproduzir vídeos do urls.txt
 
