@@ -9,7 +9,11 @@ o MooTube é um reprodutor de vídeos web auto-hospedado integrado com yt-dlp.
 - reproduzir vídeos baixados no embed do navegador
 - baixar vídeos via yt-dlp
 - baixar vídeos do urls.txt
-
+## Como atualizar
+1. Acesse a interface web
+2. Clique no botão 🔄 no canto superior
+3. Pronto! O MooTube se atualiza sozinho
+4. 
 ## como instalar
 
 para instalar temos dois métodos oficiais, Docker e manual
