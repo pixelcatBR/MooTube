@@ -6,6 +6,7 @@ import time
 from pathlib import Path
 from functools import wraps
 from datetime import datetime
+import requests
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -77,10 +78,27 @@ def atualizar_lista_videos():
 
 atualizar_lista_videos()
 
+def verificar_atualizacao():
+    try:
+        local_version = "0.0.0"
+        if os.path.exists('version.txt'):
+            with open('version.txt', 'r') as f:
+                local_version = f.read().strip()
+        
+        response = requests.get('https://raw.githubusercontent.com/themooproject/mootube/main/version.txt', timeout=5)
+        if response.status_code == 200:
+            remote_version = response.text.strip()
+            if remote_version != local_version:
+                return True, remote_version
+    except:
+        pass
+    return False, None
+
 @app.route('/')
 def index():
     urls = ler_urls_do_arquivo()
-    return render_template('index.html', videos=todos_videos, urls=urls)
+    tem_atualizacao, versao = verificar_atualizacao()
+    return render_template('index.html', videos=todos_videos, urls=urls, tem_atualizacao=tem_atualizacao, versao=versao)
 
 @app.route('/video/<path:nome_video>')
 def serve_video(nome_video):
