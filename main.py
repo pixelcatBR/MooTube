@@ -8,7 +8,8 @@ from functools import wraps
 from datetime import datetime
 
 app = Flask(__name__)
-
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.jinja_env.auto_reload = True
 PASTA_VIDEOS = "videos"
 MAX_FILE_SIZE = 2 * 1024 * 1024 * 1024 
 ALLOWED_EXTENSIONS = {'.mp4', '.webm', '.mkv', '.avi', '.mov'}
@@ -228,4 +229,4 @@ def features():
     return render_template("features.html")
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, use_reloader=True, debug=False)
