@@ -56,6 +56,16 @@ def validate_video_path(filename):
         return False, None
     return True, safe_path
 
+def is_url(input_text):
+    url_pattern = re.compile(
+        r'^https?://'
+        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,6}\.?|'
+        r'localhost|'
+        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
+        r'(?::\d+)?'
+        r'(?:/?|[/?]\S+)$', re.IGNORECASE)
+    return bool(url_pattern.match(input_text))
+
 os.makedirs(PASTA_VIDEOS, exist_ok=True)
 
 def ler_urls_do_arquivo():
@@ -164,6 +174,33 @@ def pesquisar():
         return "Nenhum termo de busca fornecido.", 400
     if len(termo) > MAX_SEARCH_LENGTH:
         return "Termo de busca muito longo.", 400
+
+    if is_url(termo):
+        videos_path = Path(PASTA_VIDEOS).resolve()
+        try:
+            print(f"Baixando URL: {termo}")
+            cmd = [
+                "yt-dlp",
+                termo,
+                "-o", str(videos_path / "%(title)s.%(ext)s"),
+                "--no-warnings",
+                "--restrict-filenames",
+                "--no-playlist", 
+                "--socket-timeout", "30"
+            ]
+            subprocess.run(
+                cmd, 
+                check=True, 
+                capture_output=True, 
+                text=True,
+                timeout=DOWNLOAD_TIMEOUT
+            )
+            atualizar_lista_videos()
+            print(f"Download concluído: {termo}")
+            return render_template('sucess.html')
+        except Exception as e:
+            print(f"Erro ao baixar {termo}: {e}")
+            return render_template('error.html')
 
     termo_seguro = re.sub(r'[;&|`$<>]', '', termo)
     
