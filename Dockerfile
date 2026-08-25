@@ -1,11 +1,16 @@
 FROM ubuntu:latest
 
-RUN apt-get update && apt-get install -y python3 pip git
-RUN pip install --break-system-packages flask yt-dlp
+WORKDIR /app/
 
-RUN git clone https://github.com/pixelcatBR/mootube.git
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip git
 
-WORKDIR /mootube
-RUN mkdir -p videos
+RUN git clone "https://github.com/themooproject/mootube"
+
+WORKDIR /app/mootube
+
+RUN pip install -r requirements.txt
+
+RUN mkdir videos
 
 CMD ["python3", "main.py"]
