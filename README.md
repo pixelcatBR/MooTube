@@ -51,7 +51,22 @@ e após tudo isso execute.
 ``` bash
 python3 main.py
 ```
-ele vai te dar o ip e é só usar
+ele vai te dar o endereço e é só usar
+
+## diferença entre método manual e docker
+
+### Docker
+ele é o método mais recomendado atualmente por ser simples de usar, com melhor suporte e com menos chances de quebrar o sistema hospedeiro, se quebrar, quebra só ele, ideal para uso diário. ele incluí:
+- melhor suporte para updates
+- maior simplicidade
+- não quebra o sistema hospedeiro
+
+### Manual
+
+Este é o método mais complexo, ele exige mais conhecimento e técnicas pra não quebrar o sistema, como o venv por exemplo, ideal para desenvolvedores que querem contribuir. ele incluí
+- instalação mais complexa
+- edição facíl do código
+- melhor para manutenções manuais
 ## passos pós instalação
 após instalar:
 - Atualize o MooTube para a versão mais recente, isso garante que ele terá todas features.
