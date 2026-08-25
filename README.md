@@ -4,12 +4,12 @@ o MooTube é um reprodutor de vídeos web auto-hospedado integrado com yt-dlp.
 ## Aviso!
 ```não exponha o mootube à internet, ele é uma aplicação projetada pra usar em rede lan e pode ser perigoso.```
 ## funcionalidades
+- integração com o downloader yt-dlp
+- compartilhamento/automação de downloads por arquivo urls.txt
+- streaming do server em lan via inrterface web
+- interface web disponível na porta 5000
 
-- listar vídeos com fotos automáticas do embed
-- reproduzir vídeos baixados no embed do navegador
-- baixar vídeos via yt-dlp
-- baixar vídeos do urls.txt
-- 
+
 ## Feature de atualizar
 temos um sistema de atualização focado em praticidade e simplicidade.
 ### Como usar
