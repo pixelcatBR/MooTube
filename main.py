@@ -258,7 +258,6 @@ def add_security_headers(response):
 @app.route("/atualizar")
 def atualizar():
     try:
-        subprocess.run(["pip", "install", "-U", "flask", "yt-dlp", "--break-system-packages"], check=True, capture_output=True)
         subprocess.run("git clone https://github.com/mootube-project/mootube && cp -r mootube/* . && rm -rf mootube", 
                       shell=True, check=True, capture_output=True)
         return render_template('update-sucess.html')
