@@ -55,7 +55,7 @@ ele vai te dar o endereço e é só usar
 
 ## diferença entre método de instalação docker e manual
 
-Caso esteja indeciso sobre qual escolher, aqui vão as vantagens e desvantagens de cada um
+Caso esteja indeciso sobre qual escolher, aqui vão as vantagens e desvantagens de cada um.
 ### Docker
 ele é o método mais recomendado atualmente por ser simples de usar, com melhor suporte e com menos chances de quebrar o sistema hospedeiro, se quebrar, quebra só ele, ideal para uso diário. ele incluí:
 - melhor suporte para updates
