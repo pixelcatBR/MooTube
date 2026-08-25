@@ -9,7 +9,10 @@ o MooTube é um reprodutor de vídeos web auto-hospedado integrado com yt-dlp.
 - reproduzir vídeos baixados no embed do navegador
 - baixar vídeos via yt-dlp
 - baixar vídeos do urls.txt
-## Como atualizar
+- 
+## Feature de atualizar
+temos um sistema de atualização focado em praticidade e simplicidade.
+### Como usar
 1. Acesse a interface web
 2. Clique no botão 🔄 no canto superior
 3. Pronto! O MooTube se atualiza sozinho
@@ -17,13 +20,13 @@ o MooTube é um reprodutor de vídeos web auto-hospedado integrado com yt-dlp.
 
 para instalar temos dois métodos oficiais, Docker e manual
 
-## método Docker(recomendado por ser fácil de instalar e com melhor suporte)
+### método Docker(recomendado por ser fácil de instalar e com melhor suporte)
 primeiro abra o terminal do seu servidor e digite isso:
 ```bash
 sudo docker run --name mootube-server -p 5000:5000 pixelcatbr/mootube
 ```
 acesse a interface web pelo endereço na tela e pronto
-## método manual (recomendado pra uso avançado e estudo do código)
+### método manual (recomendado pra uso avançado e estudo do código)
 
 para instalar primeiro precisamos copiar o código fonte do github em zip, via git clone ou interface gráfica
 
