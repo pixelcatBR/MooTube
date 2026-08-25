@@ -9,7 +9,7 @@ RUN git clone "https://github.com/themooproject/mootube"
 
 WORKDIR /app/mootube
 
-RUN pip install -r requirements.txt
+RUN pip install --break-system-packages -r requirements.txt
 
 RUN mkdir videos
 
