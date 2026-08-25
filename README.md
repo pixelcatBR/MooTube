@@ -53,10 +53,12 @@ python3 main.py
 ele vai te dar o ip e é só usar
 ## passos pós instalação
 após instalar:
-- baixe alguns vídeos e salve para você assistir sem internet.
-- crie seu urls.txt para beckup dos seus vídeos
-- verifique se não há uma nova atualização, aperte o botão atualizar que ele vai baixar a versão mais recente automaticamente.
-- use ```sudo docker start -i mootube-server``` após ter finalizado o run para rodar mootube com as suas configurações e atualizações.
+- Atualize o MooTube para a versão mais recente, isso garante que ele terá todas features.
+- Olhe as features novas pelo menu de features.
+- baixe alguns vídeos e salve para você assistir sem depender de serviços externos.
+- crie seu urls.txt para compartilhar seus videos com amigos ou baixar coleções da internet.
+- após dias de uso, verifique se não há novos updates, especialmente em versões em desenvolvimento
+- use ```sudo docker start -i mootube-server``` após ter finalizado o run para rodar seu mootube novamente.
 ## licença
  esse projeto está licenciado sobre a licença do mit, tome cuidado ao distribuir o código.
 
