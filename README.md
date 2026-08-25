@@ -53,8 +53,9 @@ python3 main.py
 ```
 ele vai te dar o endereço e é só usar
 
-## diferença entre método docker e manual
+## diferença entre método de instalação docker e manual
 
+Caso esteja indeciso sobre qual escolher, aqui vão as vantagens e desvantagens de cada um
 ### Docker
 ele é o método mais recomendado atualmente por ser simples de usar, com melhor suporte e com menos chances de quebrar o sistema hospedeiro, se quebrar, quebra só ele, ideal para uso diário. ele incluí:
 - melhor suporte para updates
@@ -67,6 +68,7 @@ Este é o método mais complexo, ele exige mais conhecimento e técnicas pra nã
 - instalação mais complexa
 - edição facíl do código
 - melhor para manutenções manuais
+- mais trabalhoso
 ## passos pós instalação
 após instalar:
 - Atualize o MooTube para a versão mais recente, isso garante que ele terá todas features.
