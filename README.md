@@ -53,7 +53,7 @@ python3 main.py
 ```
 ele vai te dar o endereço e é só usar
 
-## diferença entre método manual e docker
+## diferença entre método docker e manual
 
 ### Docker
 ele é o método mais recomendado atualmente por ser simples de usar, com melhor suporte e com menos chances de quebrar o sistema hospedeiro, se quebrar, quebra só ele, ideal para uso diário. ele incluí:
