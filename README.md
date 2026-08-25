@@ -40,7 +40,7 @@ source venv/bin/activate
 ```
 depois instale as dependências no venv
 ``` bash
-pip install flask yt-dlp
+pip install -r requirements.txt
 ```
 agora crie a pasta videos
 ``` bash
