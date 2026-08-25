@@ -1,6 +1,8 @@
+import subprocess
+print("Iniciando Mootube...")
+subprocess.run("pip install --break-system-packages -r requirements.txt", shell=True)
 from flask import Flask, render_template, send_from_directory, request, abort, jsonify
 import os
-import subprocess
 import re
 import time
 from pathlib import Path
