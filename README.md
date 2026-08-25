@@ -26,7 +26,7 @@ primeiro abra o terminal do seu servidor e digite isso:
 sudo docker run --name mootube-server -p 5000:5000 pixelcatbr/mootube
 ```
 acesse a interface web pelo endereço na tela e pronto
-### método manual (recomendado pra uso avançado e estudo do código)
+### método manual (não recomendado para uso diário)
 
 para instalar primeiro precisamos copiar o código fonte do github em zip, via git clone ou interface gráfica
 
@@ -57,7 +57,7 @@ após instalar:
 - Olhe as features novas pelo menu de features.
 - baixe alguns vídeos e salve para você assistir sem depender de serviços externos.
 - crie seu urls.txt para compartilhar seus videos com amigos ou baixar coleções da internet.
-- após dias de uso, verifique se não há novos updates, especialmente em versões em desenvolvimento
+- após dias de uso, verifique se não há novos updates, especialmente em versões em desenvolvimento.
 - use ```sudo docker start -i mootube-server``` após ter finalizado o run para rodar seu mootube novamente.
 ## licença
  esse projeto está licenciado sobre a licença do mit, tome cuidado ao distribuir o código.
