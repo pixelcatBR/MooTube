@@ -122,7 +122,9 @@
     <div class="update-banner">
         {{ notificacao }}
     </div>
-    {% elif tem_atualizacao %}
+    {% endif %}
+    
+    {% if tem_atualizacao %}
     <div class="update-banner">
         🔄 Nova versão {{ versao }} disponível! Clique em 🔄 para atualizar.
     </div>
