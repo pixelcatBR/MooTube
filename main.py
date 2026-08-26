@@ -118,16 +118,12 @@ def index():
     urls = ler_urls_do_arquivo()
     tem_atualizacao, versao = verificar_atualizacao()
     
-    notificacao = notificacao_ativa
-    notificacao_ativa = None
-
     return render_template('index.html', 
                           videos=todos_videos, 
                           urls=urls, 
                           tem_atualizacao=tem_atualizacao, 
                           versao=versao,
-                          notificacao=notificacao)
-
+                          notificacao=notificacao_ativa)
 @app.route('/video/<path:nome_video>')
 def serve_video(nome_video):
     nome_video_safe = sanitize_filename(nome_video)
