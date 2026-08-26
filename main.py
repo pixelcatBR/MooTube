@@ -28,6 +28,23 @@ def notificar(mensagem):
     global notificacao_ativa
     notificacao_ativa = mensagem
 
+notificacao_global = None
+
+def verificar_notificacao_global():
+    global notificacao_global
+    try:
+        response = requests.get('https://raw.githubusercontent.com/themooproject/mootube/main/notification.txt', timeout=5)
+        if response.status_code == 200:
+            mensagem = response.text.strip()
+            if mensagem:
+                notificacao_global = mensagem
+            else:
+                notificacao_global = None
+        else:
+            notificacao_global = None
+    except:
+        notificacao_global = None
+
 def rate_limit(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -117,13 +134,15 @@ def index():
     global notificacao_ativa
     urls = ler_urls_do_arquivo()
     tem_atualizacao, versao = verificar_atualizacao()
-    
+    verificar_notificacao_global() 
     return render_template('index.html', 
                           videos=todos_videos, 
                           urls=urls, 
                           tem_atualizacao=tem_atualizacao, 
                           versao=versao,
-                          notificacao=notificacao_ativa)
+                          notificacao=notificacao_ativa,
+                          notificacao_global=notificacao_global)
+    
 @app.route('/video/<path:nome_video>')
 def serve_video(nome_video):
     nome_video_safe = sanitize_filename(nome_video)
