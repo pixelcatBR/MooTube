@@ -22,6 +22,12 @@ RATE_LIMIT = 15
 
 rate_limit_store = {}
 
+notificacao_ativa = None
+
+def notificar(mensagem):
+    global notificacao_ativa
+    notificacao_ativa = mensagem
+
 def rate_limit(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -108,9 +114,19 @@ def verificar_atualizacao():
 
 @app.route('/')
 def index():
+    global notificacao_ativa
     urls = ler_urls_do_arquivo()
     tem_atualizacao, versao = verificar_atualizacao()
-    return render_template('index.html', videos=todos_videos, urls=urls, tem_atualizacao=tem_atualizacao, versao=versao)
+    
+    notificacao = notificacao_ativa
+    notificacao_ativa = None
+
+    return render_template('index.html', 
+                          videos=todos_videos, 
+                          urls=urls, 
+                          tem_atualizacao=tem_atualizacao, 
+                          versao=versao,
+                          notificacao=notificacao)
 
 @app.route('/video/<path:nome_video>')
 def serve_video(nome_video):
@@ -258,7 +274,7 @@ def add_security_headers(response):
 @app.route("/atualizar")
 def atualizar():
     try:
-        subprocess.run("pip install -r --break-system-packages requirements.txt --upgrade", shell=True, check=True, capture_output=True)
+        subprocess.run(["pip", "install", "-U", "flask", "yt-dlp", "--break-system-packages"], check=True, capture_output=True)
         subprocess.run("git clone https://github.com/mootube-project/mootube && cp -r mootube/* . && rm -rf mootube", 
                       shell=True, check=True, capture_output=True)
         return render_template('update-sucess.html')
