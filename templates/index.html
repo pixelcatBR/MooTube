@@ -118,7 +118,11 @@
         </form>
     </header>
     
-    {% if tem_atualizacao %}
+    {% if notificacao %}
+    <div class="update-banner">
+        {{ notificacao }}
+    </div>
+    {% elif tem_atualizacao %}
     <div class="update-banner">
         🔄 Nova versão {{ versao }} disponível! Clique em 🔄 para atualizar.
     </div>
