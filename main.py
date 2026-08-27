@@ -1,7 +1,7 @@
 import subprocess
 print("Iniciando Mootube...")
 subprocess.run("pip install --break-system-packages -r requirements.txt", shell=True)
-from flask import Flask, render_template, send_from_directory, request, abort, jsonify
+from flask import Flask, render_template, send_from_directory, request, abort, Response
 import os
 import re
 import time
@@ -44,6 +44,7 @@ def verificar_notificacao_global():
             notificacao_global = None
     except:
         notificacao_global = None
+
 
 def rate_limit(f):
     @wraps(f)
@@ -142,6 +143,18 @@ def index():
                           versao=versao,
                           notificacao=notificacao_ativa,
                           notificacao_global=notificacao_global)
+
+@app.route('/stream')
+def stream():
+    def generate():
+        ultima_mensagem = None
+        while True:
+            verificar_notificacao_global()
+            if notificacao_global != ultima_mensagem:
+                ultima_mensagem = notificacao_global
+                yield f"data: {notificacao_global or ''}\n\n"
+            time.sleep(5)
+    return Response(generate(), mimetype="text/event-stream")
     
 @app.route('/video/<path:nome_video>')
 def serve_video(nome_video):
